@@ -11,6 +11,8 @@ CREATE TABLE items
     (30) null,
     startBid INTEGER
     (10) null,
+    currentBid INTEGER
+    (10) null,
     primary key
     (id)
 );
