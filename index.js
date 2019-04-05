@@ -2,6 +2,14 @@
 var inquirer = require("inquirer");
 var mysql = require("mysql");
 
+var con = mysql.createConnection({
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "Nashville2016!",
+    database: "SQL File 8"
+});
+
 // Create a "Prompt" to ask them for a letter - ex. basic.js
 inquirer.prompt([
     {
@@ -20,9 +28,29 @@ inquirer.prompt([
         console.log("Please enter your item & starting bid: ");
         var item = process.argv[2];
         var startingBid = process.argv[3];
-        INSERT INTO items SET
-    } else {
-        console.log("you choose " + inquirerResponse.whatToDo.choices);
+        function postItem() {
+            var query = con.query(
+                "INSERT INTO items SET ?",
+                {
+                    itemName: item,
+                    startBid: startingBid,
+                    currentBid: startingBid
+                },
+                function (err, res) {
+                    console.log(res.affectedRows + " product inserted\n");
+                    queryAllItems();
+                },
+                function queryAllItems() {
+                    con.query("SELECT * FROM items", function(err, res) {
+                        for (var i = 0; i < res.length; i++) {
+                            console.log(res[i].itemName + " | " + res[i].startingBid + " | " + res[i].currentBid);
+                        }
+                        console.log("-----------------------------------");
+                        con.end();
+                    });
+                  }
+            )
+        }
     }
 
 });
